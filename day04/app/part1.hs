@@ -1,4 +1,4 @@
-import Data.Either ()
+import Data.Either (rights)
 import Data.List (transpose)
 import Data.Maybe (catMaybes)
 import qualified Data.Text as T
@@ -10,16 +10,33 @@ data Board = Board {elems :: [[(Bool, Integer)]]} deriving (Show)
 registerNum :: Integer -> Board -> Board
 registerNum n board = Board $ (map . map) (\(b, x) -> if x == n then (True, x) else (b, x)) (elems board)
 
+rotl :: [[a]] -> [[a]]
 rotl = transpose . map reverse
 
 hasWon :: Board -> Bool
-hasWon board = or $ (calc $ elems board) : [calc $ rotl $ elems board]
+hasWon board = or [calc $ elems board, calc . rotl $ elems board]
   where
     calc :: [[(Bool, Integer)]] -> Bool
-    calc e = any null (filter (\(b, n) -> b == False) <$> e)
+    calc e = any null (filter (not . fst) <$> e)
 
 calcScore :: Board -> Integer
-calcScore board = sum $ map snd $ concat (filter (\(b, n) -> b == False) <$> (elems board))
+calcScore board = sum $ map snd $ concat (filter (not . fst) <$> (elems board))
+
+textLineToNumList :: T.Text -> T.Text -> [Integer]
+textLineToNumList text sep = map fst $ rights $ map decimal $ T.splitOn sep text
+
+main :: IO ()
+main = do
+  contents <- TIO.readFile "input.txt"
+  let ls = T.lines contents
+      nums = textLineToNumList (head ls) (T.pack ",")
+      boardParts = T.splitOn (T.pack "\n\n") (T.unlines $ drop 2 ls)
+      boards = map toBoard boardParts
+
+  putStrLn $ show $ process boards nums
+  where
+    toBoard :: T.Text -> Board
+    toBoard text = Board $ (map . map) (\x -> (False, x)) $ (\t -> textLineToNumList t (T.pack " ")) <$> T.lines text
 
 process :: [Board] -> [Integer] -> Integer
 process boards nums =
@@ -27,21 +44,3 @@ process boards nums =
    in case filter hasWon newBoards of
         [b] -> (calcScore b) * (head nums)
         _ -> process newBoards (tail nums)
-
-main :: IO ()
-main = do
-  contents <- TIO.readFile "input.txt"
-  let ls = T.lines contents
-      nums = catMaybes $ map toNum $ T.splitOn (T.pack ",") (ls !! 0)
-      boardParts = T.splitOn (T.pack "\n\n") (T.unlines $ drop 2 ls)
-      boards = map toBoard boardParts
-
-  putStrLn $ show $ process boards nums
-  where
-    toNum :: T.Text -> Maybe Integer
-    toNum x = case decimal x of
-      Left _ -> Nothing
-      Right (n, _) -> Just n
-    toBoard :: T.Text -> Board
-    toBoard text = Board $ (map . map) (\x -> (False, x)) $ map lineToNumList (T.lines text)
-    lineToNumList l = catMaybes $ map toNum (T.words l)

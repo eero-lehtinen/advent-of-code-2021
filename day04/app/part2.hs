@@ -1,4 +1,4 @@
-import Data.Either ()
+import Data.Either (rights)
 import Data.List (transpose)
 import Data.Maybe (catMaybes)
 import qualified Data.Text as T
@@ -17,26 +17,13 @@ hasWon :: Board -> Bool
 hasWon board = or [calc $ elems board, calc $ rotl $ elems board]
   where
     calc :: [[(Bool, Integer)]] -> Bool
-    calc e = any null (filter (\(b, n) -> b == False) <$> e)
+    calc e = any null (filter (not . fst) <$> e)
 
 calcScore :: Board -> Integer
-calcScore board = sum $ map snd $ concat (filter (\(b, n) -> b == False) <$> (elems board))
-
-process :: [Board] -> [Integer] -> Integer
-process boards nums =
-  let newBoards = map (registerNum $ head nums) boards
-      firstBoard = head newBoards
-   in if and [length newBoards == 1, hasWon firstBoard]
-        then (calcScore firstBoard) * (head nums)
-        else process (filter (\b -> not $ hasWon b) newBoards) (tail nums)
-
-toNum :: T.Text -> Maybe Integer
-toNum x = case decimal x of
-  Left _ -> Nothing
-  Right (n, _) -> Just n
+calcScore board = sum $ map snd $ concat (filter (not . fst) <$> (elems board))
 
 textLineToNumList :: T.Text -> T.Text -> [Integer]
-textLineToNumList text sep = catMaybes $ map toNum (T.splitOn sep text)
+textLineToNumList text sep = map fst $ rights $ map decimal $ T.splitOn sep text
 
 main :: IO ()
 main = do
@@ -50,3 +37,11 @@ main = do
   where
     toBoard :: T.Text -> Board
     toBoard text = Board $ (map . map) (\x -> (False, x)) $ (\t -> textLineToNumList t (T.pack " ")) <$> T.lines text
+
+process :: [Board] -> [Integer] -> Integer
+process boards nums =
+  let newBoards = map (registerNum $ head nums) boards
+      firstBoard = head newBoards
+   in if and [length newBoards == 1, hasWon firstBoard]
+        then (calcScore firstBoard) * (head nums)
+        else process (filter (not . hasWon) newBoards) (tail nums)
