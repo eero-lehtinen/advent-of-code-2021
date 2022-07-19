@@ -70,11 +70,7 @@ fn median(numbers: &Vec<i64>) -> i64 {
 
 fn main() {
 	let contents = fs::read_to_string("input.txt").unwrap();
-	let scores: Vec<i64> = contents
-		.lines()
-		.map(calc_autocomplete_score)
-		.flatten()
-		.collect();
+	let scores: Vec<i64> = contents.lines().flat_map(calc_autocomplete_score).collect();
 
 	let middle: i64 = median(&scores);
 
