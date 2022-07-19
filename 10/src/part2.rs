@@ -16,7 +16,7 @@ fn close_char(open_chars: &mut Vec<char>, char: char) -> Option<i64> {
 	match open_chars.last().map(|c| *c == opening_char) {
 		Some(true) => {
 			open_chars.pop();
-			return None;
+			None
 		}
 		Some(false) => {
 			let score = match char {
@@ -27,9 +27,9 @@ fn close_char(open_chars: &mut Vec<char>, char: char) -> Option<i64> {
 				_ => panic!("Unexpected character"),
 			};
 
-			return Some(score);
+			Some(score)
 		}
-		_ => return None,
+		_ => None,
 	}
 }
 
@@ -43,7 +43,7 @@ fn calc_autocomplete_score(line: &str) -> Option<i64> {
 		}
 
 		if let Some(_) = close_char(&mut open_chars, char) {
-			return None; // Ingore corrupted
+			return None; // Ignore corrupted
 		}
 	}
 

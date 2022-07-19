@@ -10,13 +10,13 @@ fn closing_to_opening(char: char) -> char {
 	}
 }
 
-fn close_char(open_chars: &mut Vec<char>, char: char) -> Option<i32> {
+fn close_char(open_chars: &mut Vec<char>, char: char) -> Option<i64> {
 	let opening_char = closing_to_opening(char);
 
 	match open_chars.last().map(|c| *c == opening_char) {
 		Some(true) => {
 			open_chars.pop();
-			return None;
+			None
 		}
 		Some(false) => {
 			let score = match char {
@@ -27,13 +27,13 @@ fn close_char(open_chars: &mut Vec<char>, char: char) -> Option<i32> {
 				_ => panic!("Unexpected character"),
 			};
 
-			return Some(score);
+			Some(score)
 		}
-		_ => return None,
+		_ => None,
 	}
 }
 
-fn calc_error_score(line: &str) -> i32 {
+fn calc_error_score(line: &str) -> i64 {
 	let mut open_chars = Vec::new();
 
 	for char in line.chars() {
@@ -53,8 +53,9 @@ fn calc_error_score(line: &str) -> i32 {
 fn main() {
 	let contents = fs::read_to_string("input.txt").unwrap();
 
-	let scores: Vec<i32> = contents.lines().map(calc_error_score).collect();
-	let sum: i32 = scores.iter().sum();
+	let scores: Vec<i64> = contents.lines().map(calc_error_score).collect();
+	let sum: i64 = scores.iter().sum();
+	
 	println!("{:?}", scores);
 	println!("{:?}", sum);
 }
