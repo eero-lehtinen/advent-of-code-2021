@@ -35,13 +35,13 @@ fn a_star(nodes: Vec<Vec<i32>>) -> Vec<(usize, usize)> {
 	let start_pos = (0, 0);
 	let end_pos = (nodes.first().unwrap().len() - 1, nodes.len() - 1);
 
+	let h = |pos| manhattan_dist(pos, end_pos);
+
 	let mut open_set = BinaryHeap::new();
 	open_set.push(HeapItem {
 		pos: start_pos,
-		f_score: manhattan_dist(start_pos, end_pos),
+		f_score: h(start_pos),
 	});
-
-	let h = |pos| manhattan_dist(pos, end_pos);
 
 	let mut came_from = HashMap::new();
 	let mut g_scores = HashMap::new();

@@ -26,18 +26,16 @@ impl Ord for HeapItem {
 	}
 }
 
-fn euclidean_dist(a: (usize, usize), b: (usize, usize)) -> i32 {
-	((if a.0 >= b.0 { a.0 - b.0 } else { b.0 - a.0 }
-		+ if a.1 >= b.1 { a.1 - b.1 } else { b.1 - a.1 }) as f64)
-		.sqrt()
-		.round() as i32
+fn manhattan_dist(a: (usize, usize), b: (usize, usize)) -> i32 {
+	(if a.0 >= b.0 { a.0 - b.0 } else { b.0 - a.0 } as i32)
+		+ (if a.1 >= b.1 { a.1 - b.1 } else { b.1 - a.1 } as i32)
 }
 
 fn a_star(nodes: Vec<Vec<i32>>) -> Vec<(usize, usize)> {
 	let start_pos = (0, 0);
 	let end_pos = (nodes.first().unwrap().len() - 1, nodes.len() - 1);
 
-	let h = |pos| euclidean_dist(pos, end_pos);
+	let h = |pos| manhattan_dist(pos, end_pos);
 
 	let mut open_set = BinaryHeap::new();
 	open_set.push(HeapItem {
