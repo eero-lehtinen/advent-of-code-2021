@@ -31,10 +31,11 @@ fn manhattan_dist(a: (usize, usize), b: (usize, usize)) -> i32 {
 		+ (if a.1 >= b.1 { a.1 - b.1 } else { b.1 - a.1 } as i32)
 }
 
-fn a_star(nodes: Vec<Vec<i32>>) -> Vec<(usize, usize)> {
-	let start_pos = (0, 0);
-	let end_pos = (nodes.first().unwrap().len() - 1, nodes.len() - 1);
-
+fn a_star(
+	nodes: Vec<Vec<i32>>,
+	start_pos: (usize, usize),
+	end_pos: (usize, usize),
+) -> Vec<(usize, usize)> {
 	let h = |pos| manhattan_dist(pos, end_pos);
 
 	let mut open_set = BinaryHeap::new();
@@ -101,15 +102,8 @@ fn a_star(nodes: Vec<Vec<i32>>) -> Vec<(usize, usize)> {
 	panic!("path not found");
 }
 
-fn main() {
-	let contents = fs::read_to_string("input.txt").unwrap();
-
-	let nodes = contents.lines().map(parse_num_line).collect::<Vec<_>>();
-
-	let path = a_star(nodes.clone());
-
+fn print_path(nodes: &Vec<Vec<i32>>, path: &Vec<(usize, usize)>) {
 	let mut path_display = String::new();
-
 	for (y, line) in nodes.iter().enumerate() {
 		for (x, node) in line.iter().enumerate() {
 			if path.contains(&(x, y)) {
@@ -118,10 +112,23 @@ fn main() {
 				path_display.push_str(&node.to_string());
 			}
 		}
-		path_display.push_str("\n");
+		path_display.push('\n');
 	}
 
 	println!("{path_display}");
+}
+
+fn main() {
+	let contents = fs::read_to_string("input.txt").unwrap();
+
+	let nodes = contents.lines().map(parse_num_line).collect::<Vec<_>>();
+
+	let start_pos = (0, 0);
+	let end_pos = (nodes.first().unwrap().len() - 1, nodes.len() - 1);
+
+	let path = a_star(nodes.clone(), start_pos, end_pos);
+
+	print_path(&nodes, &path);
 
 	let cost = path
 		.iter()
