@@ -30,9 +30,9 @@ fn part1() {
 
 	for i in 0..(length - 1) {
 		if one_counts[i] > zero_counts[i] {
-			gamma |= 1u32 << (length - 1) - i;
+			gamma |= 1u32 << ((length - 1) - i);
 		} else {
-			epsilon |= 1u32 << (length - 1) - i;
+			epsilon |= 1u32 << ((length - 1) - i);
 		}
 	}
 

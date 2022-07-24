@@ -11,7 +11,7 @@ fn main() {
 		.skip(1)
 		.map(|l| {
 			(
-				(l.chars().nth(0).unwrap(), l.chars().nth(1).unwrap()),
+				(l.chars().next().unwrap(), l.chars().nth(1).unwrap()),
 				l.chars().nth(6).unwrap(),
 			)
 		})
@@ -29,14 +29,11 @@ fn main() {
 
 	for _ in 0..40 {
 		for (pair, count) in pairs.clone() {
-			match transitions.get(&pair) {
-				Some(t) => {
-					*pairs.entry(pair).or_insert(0) -= count;
-					*pairs.entry((pair.0, *t)).or_insert(0) += count;
-					*pairs.entry((*t, pair.1)).or_insert(0) += count;
-					*char_counts.entry(*t).or_insert(0) += count;
-				}
-				_ => (),
+			if let Some(t) = transitions.get(&pair) {
+				*pairs.entry(pair).or_insert(0) -= count;
+				*pairs.entry((pair.0, *t)).or_insert(0) += count;
+				*pairs.entry((*t, pair.1)).or_insert(0) += count;
+				*char_counts.entry(*t).or_insert(0) += count;
 			}
 		}
 	}

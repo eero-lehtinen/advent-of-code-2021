@@ -8,7 +8,7 @@ fn parse_num_line(line: &str) -> Vec<i32> {
 }
 
 fn simulate(mut nums: Vec<Vec<(bool, i32)>>) -> i32 {
-	fn safe_increment(nums: &mut Vec<Vec<(bool, i32)>>, x: i32, y: i32) {
+	fn safe_increment(nums: &mut [Vec<(bool, i32)>], x: i32, y: i32) {
 		if x < 0 || y < 0 || x > 9 || y > 9 {
 			return;
 		}
@@ -32,7 +32,7 @@ fn simulate(mut nums: Vec<Vec<(bool, i32)>>) -> i32 {
 			for x in 0..10 {
 				for y in 0..10 {
 					let val = &mut nums[x as usize][y as usize];
-					if val.0 == false && val.1 > 9 {
+					if !val.0 && val.1 > 9 {
 						val.0 = true;
 						safe_increment(&mut nums, x - 1, y - 1);
 						safe_increment(&mut nums, x - 1, y);

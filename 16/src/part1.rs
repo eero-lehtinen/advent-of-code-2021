@@ -33,7 +33,7 @@ fn read_packet(bits: &BitSlice<u8, Msb0>) -> (u64, usize) {
 
 	match type_id {
 		4 => {
-			let (literal, read_len) = read_literal(&bits);
+			let (literal, read_len) = read_literal(bits);
 			bits = &bits[read_len..];
 			println!("literal: {}", literal);
 		}
@@ -48,7 +48,7 @@ fn read_packet(bits: &BitSlice<u8, Msb0>) -> (u64, usize) {
 					println!("sub_packet_bit_len: {}", sub_packet_bit_len);
 					let mut processed_len: usize = 0;
 					while processed_len < sub_packet_bit_len {
-						let (v_sum, read_len) = read_packet(&bits);
+						let (v_sum, read_len) = read_packet(bits);
 						version_sum += v_sum;
 						processed_len += read_len;
 						bits = &bits[read_len..]
@@ -58,7 +58,7 @@ fn read_packet(bits: &BitSlice<u8, Msb0>) -> (u64, usize) {
 					let sub_packet_len: u32 = bits[..11].load_be();
 					bits = &bits[11..];
 					for _ in 0..sub_packet_len {
-						let (v_sum, read_len) = read_packet(&bits);
+						let (v_sum, read_len) = read_packet(bits);
 						version_sum += v_sum;
 						bits = &bits[read_len..]
 					}
@@ -79,7 +79,7 @@ fn main() {
 
 	let bits = nums.view_bits::<Msb0>();
 
-	let (version_sum, _read_len) = read_packet(&bits);
+	let (version_sum, _read_len) = read_packet(bits);
 
 	println!("RESULT: {}", version_sum);
 }

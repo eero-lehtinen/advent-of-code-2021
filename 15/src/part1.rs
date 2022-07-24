@@ -1,5 +1,6 @@
 use std::cmp::*;
 use std::collections::HashMap;
+use std::fmt::Write as _;
 use std::{collections::BinaryHeap, fs};
 
 fn parse_num_line(line: &str) -> Vec<i32> {
@@ -90,7 +91,7 @@ fn a_star(
 				let f_score = tentative_g_score + h(neigh_pos);
 				f_scores.insert(neigh_pos, f_score);
 
-				if open_set.iter().find(|x| x.pos == neigh_pos).is_none() {
+				if !open_set.iter().any(|x| x.pos == neigh_pos) {
 					open_set.push(HeapItem {
 						pos: neigh_pos,
 						f_score,
@@ -102,12 +103,12 @@ fn a_star(
 	panic!("path not found");
 }
 
-fn print_path(nodes: &Vec<Vec<i32>>, path: &Vec<(usize, usize)>) {
+fn print_path(nodes: &[Vec<i32>], path: &[(usize, usize)]) {
 	let mut path_display = String::new();
 	for (y, line) in nodes.iter().enumerate() {
 		for (x, node) in line.iter().enumerate() {
 			if path.contains(&(x, y)) {
-				path_display.push_str(&format!("\x1b[94m{node}\x1b[0m"));
+				let _ = write!(path_display, "\x1b[94m{node}\x1b[0m");
 			} else {
 				path_display.push_str(&node.to_string());
 			}

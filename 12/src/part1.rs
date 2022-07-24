@@ -18,7 +18,7 @@ fn insert_node(nodes: &mut Vec<Node>, node_name: &str) -> usize {
 	nodes.len() - 1
 }
 
-fn print_path(nodes: &Vec<Node>, path: &Vec<usize>) {
+fn print_path(nodes: &[Node], path: &[usize]) {
 	println!(
 		"{}",
 		path.iter()
@@ -34,7 +34,7 @@ fn main() {
 	let edges: Vec<(&str, &str)> = contents
 		.lines()
 		.map(|line| {
-			let mut split = line.split("-");
+			let mut split = line.split('-');
 			(split.next().unwrap(), split.next().unwrap())
 		})
 		.collect();
@@ -69,8 +69,7 @@ fn main() {
 
 	let mut paths: Vec<Vec<usize>> = Vec::new();
 
-	let mut stack: Vec<(usize, Vec<usize>)> = Vec::new();
-	stack.push((start_idx, Vec::new()));
+	let mut stack: Vec<(usize, Vec<usize>)> = vec![(start_idx, Vec::new())];
 
 	while !stack.is_empty() {
 		let (idx, path) = stack.pop().unwrap();
@@ -92,7 +91,7 @@ fn main() {
 	}
 
 	for path in &paths {
-		print_path(&nodes, &path);
+		print_path(&nodes, path);
 	}
 
 	println!("{}", paths.len());

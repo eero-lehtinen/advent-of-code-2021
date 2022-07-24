@@ -33,12 +33,12 @@ fn fold_points(points: &mut Vec<Point>, dir: Direction, at: i32) {
 	points.dedup();
 }
 
-fn print_points(points: &Vec<Point>) {
+fn print_points(points: &[Point]) {
 	let y_max = points.iter().max_by_key(|p| p.y).unwrap().y + 1;
 	let x_max = points.iter().max_by_key(|p| p.x).unwrap().x + 1;
 	for y in 0..y_max {
 		for x in 0..x_max {
-			if points.iter().find(|p| p.x == x && p.y == y).is_some() {
+			if points.iter().any(|p| p.x == x && p.y == y) {
 				print!("#");
 			} else {
 				print!(".")

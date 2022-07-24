@@ -42,7 +42,7 @@ fn calc_autocomplete_score(line: &str) -> Option<i64> {
 			continue;
 		}
 
-		if let Some(_) = close_char(&mut open_chars, char) {
+		if close_char(&mut open_chars, char).is_some() {
 			return None; // Ignore corrupted
 		}
 	}
@@ -61,8 +61,8 @@ fn calc_autocomplete_score(line: &str) -> Option<i64> {
 	Some(score)
 }
 
-fn median(numbers: &Vec<i64>) -> i64 {
-	let mut numbers = numbers.clone();
+fn median(numbers: &[i64]) -> i64 {
+	let mut numbers: Vec<i64> = Vec::from(numbers);
 	numbers.sort_unstable();
 	let mid = numbers.len() / 2;
 	numbers[mid]
