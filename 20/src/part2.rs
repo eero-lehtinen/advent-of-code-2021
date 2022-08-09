@@ -1,6 +1,5 @@
 use std::fmt;
 use std::fs;
-use std::iter;
 
 #[derive(Clone, Debug)]
 enum Pixel {
