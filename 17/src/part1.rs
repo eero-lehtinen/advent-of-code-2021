@@ -5,7 +5,7 @@ fn calc_lowest_x_velocity(target_start: i64, target_end: i64) -> i64 {
 		loop {
 			pos += velocity;
 			if velocity > 0 {
-				velocity -= 1
+				velocity -= 1;
 			}
 
 			if pos >= target_start && pos <= target_end {

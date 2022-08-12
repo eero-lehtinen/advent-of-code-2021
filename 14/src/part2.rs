@@ -5,7 +5,7 @@ fn main() {
 
 	let mut lines = contents.lines();
 
-	let state = Vec::from_iter(lines.next().unwrap().to_owned().chars());
+	let state = lines.next().unwrap().to_owned().chars().collect::<Vec<_>>();
 
 	let transitions: HashMap<(char, char), char> = lines
 		.skip(1)

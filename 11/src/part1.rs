@@ -2,8 +2,8 @@ use std::fs;
 
 fn parse_num_line(line: &str) -> Vec<i32> {
 	line.chars()
-		.flat_map(|c| c.to_digit(10))
-		.map(|u| u as i32)
+		.filter_map(|c| c.to_digit(10))
+		.filter_map(|u| i32::try_from(u).ok())
 		.collect()
 }
 
@@ -12,7 +12,7 @@ fn simulate(mut nums: Vec<Vec<(bool, i32)>>) -> i32 {
 		if x < 0 || y < 0 || x > 9 || y > 9 {
 			return;
 		}
-		nums[x as usize][y as usize].1 += 1;
+		nums[usize::try_from(x).unwrap()][usize::try_from(y).unwrap()].1 += 1;
 	}
 
 	let mut flashes = 0;
@@ -21,7 +21,7 @@ fn simulate(mut nums: Vec<Vec<(bool, i32)>>) -> i32 {
 		for line in &mut nums {
 			for n in line {
 				if n.1 > 9 {
-					n.1 = 0
+					n.1 = 0;
 				}
 				n.0 = false;
 				n.1 += 1;
@@ -33,7 +33,7 @@ fn simulate(mut nums: Vec<Vec<(bool, i32)>>) -> i32 {
 			done = true;
 			for x in 0..10 {
 				for y in 0..10 {
-					let val = &mut nums[x as usize][y as usize];
+					let val = &mut nums[usize::try_from(x).unwrap()][usize::try_from(y).unwrap()];
 					if !val.0 && val.1 > 9 {
 						val.0 = true;
 						safe_increment(&mut nums, x - 1, y - 1);

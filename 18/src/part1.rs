@@ -14,10 +14,10 @@ fn explode(line: &mut Vec<(i32, i32)>) -> bool {
 	let explode_pos = explode_pos.unwrap();
 
 	if explode_pos > 0 {
-		line[explode_pos - 1].1 += line[explode_pos].1
+		line[explode_pos - 1].1 += line[explode_pos].1;
 	}
 	if explode_pos < line.len() - 2 {
-		line[explode_pos + 2].1 += line[explode_pos + 1].1
+		line[explode_pos + 2].1 += line[explode_pos + 1].1;
 	}
 	let (d, _) = line.remove(explode_pos);
 	line[explode_pos] = (d - 1, 0);
@@ -93,7 +93,7 @@ fn main() {
 		let mut nums = vec![];
 		for c in l.chars() {
 			if let Some(n) = c.to_digit(10) {
-				nums.push((depth, n as i32))
+				nums.push((depth, i32::try_from(n).unwrap()));
 			} else if c == '[' {
 				depth += 1;
 			} else if c == ']' {

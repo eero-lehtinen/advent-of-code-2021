@@ -17,7 +17,7 @@ struct Area {
 }
 
 impl Area {
-	fn contains(&self, x: i64, y: i64, z: i64) -> bool {
+	const fn contains(&self, x: i64, y: i64, z: i64) -> bool {
 		self.x.0 <= x
 			&& x <= self.x.1
 			&& self.y.0 <= y
@@ -59,10 +59,10 @@ fn main() {
 	let areas = contents.lines().map(parse_command).collect::<Vec<_>>();
 
 	let collect_borders = |v: &Vec<Area>, f: fn(&Area) -> [i64; 2]| {
-		let mut new: Vec<i64> = v.iter().flat_map(f).collect();
-		new.sort();
-		new.dedup();
-		new
+		let mut x: Vec<i64> = v.iter().flat_map(f).collect();
+		x.sort_unstable();
+		x.dedup();
+		x
 	};
 
 	let xs = collect_borders(&areas, |a| [a.x.0, a.x.1 + 1]);
@@ -78,7 +78,7 @@ fn main() {
 			let mut sum = 0;
 			for (y1, y2) in ys.iter().zip(ys.iter().skip(1)) {
 				for (z1, z2) in zs.iter().zip(zs.iter().skip(1)) {
-					for area in areas.iter() {
+					for area in &areas {
 						if area.contains(*x1, *y1, *z1) {
 							sum += match area.action {
 								Action::On => (x2 - x1) * (y2 - y1) * (z2 - z1),

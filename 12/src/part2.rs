@@ -77,7 +77,9 @@ fn main() {
 		new_path.push(idx);
 
 		let node = &nodes[idx];
-		if idx != end_idx {
+		if idx == end_idx {
+			paths.push(new_path);
+		} else {
 			for neigh_idx in &node.neighbors {
 				let neigh = &nodes[*neigh_idx];
 
@@ -96,8 +98,6 @@ fn main() {
 					stack.push((*neigh_idx, new_path.clone(), true));
 				}
 			}
-		} else {
-			paths.push(new_path);
 		}
 	}
 

@@ -6,7 +6,7 @@ fn calc_x_velocities(target: (i64, i64)) -> Vec<i64> {
 		loop {
 			pos += velocity;
 			if velocity > 0 {
-				velocity -= 1
+				velocity -= 1;
 			}
 
 			if pos >= target.0 && pos <= target.1 {
@@ -47,7 +47,7 @@ fn calc_y_velocities(target: (i64, i64)) -> Vec<i64> {
 	res
 }
 
-fn simulate(mut velocity: (i64, i64), target_x: (i64, i64), target_y: (i64, i64)) -> bool {
+const fn simulate(mut velocity: (i64, i64), target_x: (i64, i64), target_y: (i64, i64)) -> bool {
 	let mut pos = (0, 0);
 	loop {
 		pos.0 += velocity.0;
@@ -78,8 +78,8 @@ fn main() {
 	let ys = calc_y_velocities(y_target);
 
 	let mut velocities = Vec::new();
-	for x in xs.iter() {
-		for y in ys.iter() {
+	for x in &xs {
+		for y in &ys {
 			if simulate((*x, *y), x_target, y_target) {
 				velocities.push((*x, *y));
 			}

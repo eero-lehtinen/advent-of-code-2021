@@ -47,9 +47,9 @@ fn read_packet(bits: &BitSlice<u8, Msb0>) -> (u64, usize) {
 					1 => x.iter().product(),
 					2 => *x.iter().min().unwrap(),
 					3 => *x.iter().max().unwrap(),
-					5 => (x[0] > x[1]) as u64,
-					6 => (x[0] < x[1]) as u64,
-					7 => (x[0] == x[1]) as u64,
+					5 => u64::from(x[0] > x[1]),
+					6 => u64::from(x[0] < x[1]),
+					7 => u64::from(x[0] == x[1]),
 					_ => panic!("Invalid operator"),
 				}
 			};
@@ -60,28 +60,25 @@ fn read_packet(bits: &BitSlice<u8, Msb0>) -> (u64, usize) {
 
 			let mut sub_results = Vec::new();
 
-			match length_type_id {
-				false => {
-					let sub_packet_bit_len: usize = bits[..15].load_be();
-					bits = &bits[15..];
-					println!("sub_packet_bit_len: {}", sub_packet_bit_len);
-					let mut processed_len: usize = 0;
-
-					while processed_len < sub_packet_bit_len {
-						let (sub_res, read_len) = read_packet(bits);
-						sub_results.push(sub_res);
-						processed_len += read_len;
-						bits = &bits[read_len..]
-					}
+			if length_type_id {
+				let sub_packet_len: usize = bits[..11].load_be();
+				bits = &bits[11..];
+				for _ in 0..sub_packet_len {
+					let (sub_res, read_len) = read_packet(bits);
+					sub_results.push(sub_res);
+					bits = &bits[read_len..];
 				}
-				true => {
-					let sub_packet_len: usize = bits[..11].load_be();
-					bits = &bits[11..];
-					for _ in 0..sub_packet_len {
-						let (sub_res, read_len) = read_packet(bits);
-						sub_results.push(sub_res);
-						bits = &bits[read_len..]
-					}
+			} else {
+				let sub_packet_bit_len: usize = bits[..15].load_be();
+				bits = &bits[15..];
+				println!("sub_packet_bit_len: {}", sub_packet_bit_len);
+				let mut processed_len: usize = 0;
+
+				while processed_len < sub_packet_bit_len {
+					let (sub_res, read_len) = read_packet(bits);
+					sub_results.push(sub_res);
+					processed_len += read_len;
+					bits = &bits[read_len..];
 				}
 			}
 

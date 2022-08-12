@@ -78,15 +78,15 @@ fn main() {
 		new_path.push(idx);
 
 		let node = &nodes[idx];
-		if idx != end_idx {
+		if idx == end_idx {
+			paths.push(new_path);
+		} else {
 			for neigh_idx in &node.neighbors {
 				let neigh = &nodes[*neigh_idx];
 				if neigh.big || !new_path.contains(&neigh.idx) || neigh.idx == end_idx {
 					stack.push((*neigh_idx, new_path.clone()));
 				}
 			}
-		} else {
-			paths.push(new_path);
 		}
 	}
 

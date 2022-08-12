@@ -5,8 +5,8 @@ struct Player {
 }
 
 impl Player {
-	fn new(pos: i32) -> Player {
-		Player {
+	const fn new(pos: i32) -> Self {
+		Self {
 			pos: pos - 1,
 			score: 0,
 		}
@@ -25,8 +25,8 @@ struct DeterministicDie {
 }
 
 impl DeterministicDie {
-	fn new() -> DeterministicDie {
-		DeterministicDie { num: 0, rolls: 0 }
+	const fn new() -> Self {
+		Self { num: 0, rolls: 0 }
 	}
 
 	fn roll(&mut self) -> i32 {

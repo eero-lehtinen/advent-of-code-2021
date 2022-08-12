@@ -51,7 +51,7 @@ fn filter_nums(mut numbers: Vec<u32>, cmp: &dyn Fn(i32, i32) -> bool, bit_len: u
 		let mut one_count = 0;
 		let mut zero_count = 0;
 
-		for number in numbers.iter() {
+		for number in &numbers {
 			if number >> bit_pos & 1 == 1 {
 				one_count += 1;
 			} else {

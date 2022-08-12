@@ -6,8 +6,8 @@ struct Game {
 }
 
 impl Game {
-	fn new(p1: Player, p2: Player) -> Game {
-		Game { players: [p1, p2] }
+	const fn new(p1: Player, p2: Player) -> Self {
+		Self { players: [p1, p2] }
 	}
 }
 
@@ -18,8 +18,8 @@ struct Player {
 }
 
 impl Player {
-	fn new(pos: i32) -> Player {
-		Player {
+	const fn new(pos: i32) -> Self {
+		Self {
 			pos: pos - 1,
 			score: 0,
 		}
@@ -54,8 +54,8 @@ fn main() {
 
 		let p_idx: usize = turn % 2;
 
-		for (game, game_count) in old_game_map.iter() {
-			for die in possible_dice.iter() {
+		for (game, game_count) in &old_game_map {
+			for die in &possible_dice {
 				let mut new_game = game.clone();
 				new_game.players[p_idx].mv(*die);
 				if new_game.players[p_idx].score >= WINNING_SCORE {

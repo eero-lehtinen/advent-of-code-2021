@@ -16,7 +16,7 @@ impl InfiniteImage {
 	fn new(data: Vec<Vec<Pixel>>, outside: Pixel) -> Self {
 		let mut data = data;
 		// Add padding
-		for line in data.iter_mut() {
+		for line in &mut data {
 			for _ in 0..3 {
 				line.insert(0, outside.clone());
 				line.push(outside.clone());
@@ -27,7 +27,7 @@ impl InfiniteImage {
 			data.push(vec![outside.clone(); data[0].len()]);
 		}
 
-		InfiniteImage { data, outside }
+		Self { data, outside }
 	}
 
 	fn get(&self, x: usize, y: usize) -> &Pixel {
@@ -70,7 +70,7 @@ impl InfiniteImage {
 		.unwrap()
 		.clone();
 
-		InfiniteImage::new(new_data, new_outside)
+		Self::new(new_data, new_outside)
 	}
 }
 

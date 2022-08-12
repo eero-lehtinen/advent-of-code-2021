@@ -19,7 +19,7 @@ fn parse_coord_line(line: &str) -> Coord {
 	}
 }
 
-fn manhattan_dist(a: &Coord, b: &Coord) -> i64 {
+const fn manhattan_dist(a: &Coord, b: &Coord) -> i64 {
 	(a.x - b.x).abs() + (a.y - b.y).abs() + (a.z - b.z).abs()
 }
 
@@ -60,7 +60,7 @@ fn rotate(c: &Coord, rot: u32) -> Coord {
 	Coord { x, y, z }
 }
 
-fn apply_offset(coord: &Coord, offset: &Coord) -> Coord {
+const fn apply_offset(coord: &Coord, offset: &Coord) -> Coord {
 	Coord {
 		x: coord.x - offset.x,
 		y: coord.y - offset.y,
@@ -87,7 +87,7 @@ fn solve_scanner_coord_rot(
 		let mut match_count = 0;
 		for m in matches.iter().skip(1) {
 			let d1 = &origin_detections[m.0];
-			let mut d2 = target_detections[m.1].to_owned();
+			let mut d2 = target_detections[m.1].clone();
 			d2 = rotate(&d2, rot);
 			d2 = apply_offset(&d2, &offset);
 
@@ -126,7 +126,7 @@ fn main() {
 		.collect();
 
 	let mut detection_rel_dist: Vec<Vec<Vec<(usize, i64)>>> = vec![];
-	for det in detections.iter() {
+	for det in &detections {
 		detection_rel_dist.push(calc_rel_dist(det));
 	}
 
@@ -189,8 +189,8 @@ fn main() {
 	println!("len: {:?}", solved_points.len());
 
 	let mut largest_dist = 0;
-	for offset in offsets.iter() {
-		for offset2 in offsets.iter() {
+	for offset in &offsets {
+		for offset2 in &offsets {
 			let dist = manhattan_dist(offset, offset2);
 			if dist > largest_dist {
 				largest_dist = dist;

@@ -19,8 +19,8 @@ enum Direction {
 	Horizontal,
 }
 
-fn fold_points(points: &mut Vec<Point>, dir: &Direction, at: &i32) {
-	let f = |val| if val > *at { *at - (val - *at) } else { val };
+fn fold_points(points: &mut Vec<Point>, dir: &Direction, at: i32) {
+	let f = |val| if val > at { at - (val - at) } else { val };
 
 	for p in points.iter_mut() {
 		match dir {
@@ -57,7 +57,7 @@ fn main() {
 	let mut points: Vec<Point> = point_contents.lines().filter_map(parse_point).collect();
 
 	let (dir, at) = &fold_commands[0];
-	fold_points(&mut points, dir, at);
+	fold_points(&mut points, dir, *at);
 
 	println!("{:?}", points.len());
 }

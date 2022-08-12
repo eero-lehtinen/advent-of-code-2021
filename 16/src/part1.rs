@@ -24,7 +24,7 @@ fn read_packet(bits: &BitSlice<u8, Msb0>) -> (u64, usize) {
 	println!("bits: {bits}");
 
 	let version: u8 = bits[..3].load_be();
-	let mut version_sum = version as u64;
+	let mut version_sum = u64::from(version);
 	let type_id: u8 = bits[3..6].load_be();
 	bits = &bits[6..];
 
@@ -41,27 +41,24 @@ fn read_packet(bits: &BitSlice<u8, Msb0>) -> (u64, usize) {
 			let length_type_id = bits[0];
 			bits = &bits[1..];
 			println!("length_type_id: {}", length_type_id);
-			match length_type_id {
-				false => {
-					let sub_packet_bit_len: usize = bits[..15].load_be();
-					bits = &bits[15..];
-					println!("sub_packet_bit_len: {}", sub_packet_bit_len);
-					let mut processed_len: usize = 0;
-					while processed_len < sub_packet_bit_len {
-						let (v_sum, read_len) = read_packet(bits);
-						version_sum += v_sum;
-						processed_len += read_len;
-						bits = &bits[read_len..]
-					}
+			if length_type_id {
+				let sub_packet_len: u32 = bits[..11].load_be();
+				bits = &bits[11..];
+				for _ in 0..sub_packet_len {
+					let (v_sum, read_len) = read_packet(bits);
+					version_sum += v_sum;
+					bits = &bits[read_len..];
 				}
-				true => {
-					let sub_packet_len: u32 = bits[..11].load_be();
-					bits = &bits[11..];
-					for _ in 0..sub_packet_len {
-						let (v_sum, read_len) = read_packet(bits);
-						version_sum += v_sum;
-						bits = &bits[read_len..]
-					}
+			} else {
+				let sub_packet_bit_len: usize = bits[..15].load_be();
+				bits = &bits[15..];
+				println!("sub_packet_bit_len: {}", sub_packet_bit_len);
+				let mut processed_len: usize = 0;
+				while processed_len < sub_packet_bit_len {
+					let (v_sum, read_len) = read_packet(bits);
+					version_sum += v_sum;
+					processed_len += read_len;
+					bits = &bits[read_len..];
 				}
 			}
 		}

@@ -1,11 +1,12 @@
-use std::cmp::*;
+use std::cmp::{Eq, Ord, Ordering, PartialEq, PartialOrd};
 use std::collections::HashMap;
 use std::fmt::Write as _;
 use std::{collections::BinaryHeap, fs};
 
 fn parse_num_line(line: &str) -> Vec<i32> {
 	line.chars()
-		.flat_map(|c| c.to_digit(10).map(|x| x as i32))
+		.filter_map(|c| c.to_digit(10))
+		.filter_map(|x| i32::try_from(x).ok())
 		.collect()
 }
 
@@ -22,18 +23,19 @@ impl PartialOrd for HeapItem {
 }
 
 impl Ord for HeapItem {
-	fn cmp(&self, other: &HeapItem) -> Ordering {
+	fn cmp(&self, other: &Self) -> Ordering {
 		self.f_score.cmp(&other.f_score).reverse()
 	}
 }
 
 fn manhattan_dist(a: (usize, usize), b: (usize, usize)) -> i32 {
-	(if a.0 >= b.0 { a.0 - b.0 } else { b.0 - a.0 } as i32)
-		+ (if a.1 >= b.1 { a.1 - b.1 } else { b.1 - a.1 } as i32)
+	let x = (if a.0 >= b.0 { a.0 - b.0 } else { b.0 - a.0 })
+		+ (if a.1 >= b.1 { a.1 - b.1 } else { b.1 - a.1 });
+	i32::try_from(x).unwrap()
 }
 
 fn a_star(
-	nodes: Vec<Vec<i32>>,
+	nodes: &[Vec<i32>],
 	start_pos: (usize, usize),
 	end_pos: (usize, usize),
 ) -> Vec<(usize, usize)> {
@@ -127,7 +129,7 @@ fn main() {
 	let start_pos = (0, 0);
 	let end_pos = (nodes.first().unwrap().len() - 1, nodes.len() - 1);
 
-	let path = a_star(nodes.clone(), start_pos, end_pos);
+	let path = a_star(&nodes, start_pos, end_pos);
 
 	print_path(&nodes, &path);
 

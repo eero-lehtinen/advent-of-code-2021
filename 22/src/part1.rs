@@ -40,7 +40,7 @@ fn main() {
 
 	let commands = contents.lines().map(parse_command);
 
-	let mut cubes = [[[false; 101]; 101]; 101];
+	let mut cubes = vec![[[false; 101]; 101]; 101].into_boxed_slice();
 
 	for command in commands {
 		let target_state = match command.action {
@@ -65,7 +65,8 @@ fn main() {
 						break;
 					}
 
-					cubes[z as usize][y as usize][x as usize] = target_state
+					cubes[usize::try_from(z).unwrap()][usize::try_from(y).unwrap()]
+						[usize::try_from(x).unwrap()] = target_state;
 				}
 			}
 		}
