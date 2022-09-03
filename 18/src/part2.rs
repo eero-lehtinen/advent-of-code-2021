@@ -1,3 +1,4 @@
+#![allow(clippy::pedantic)]
 use std::fs;
 
 fn explode(line: &mut Vec<(i32, i32)>) -> bool {
