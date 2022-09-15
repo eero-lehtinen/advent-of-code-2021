@@ -6,7 +6,7 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 
 digitStringToNumList :: String -> [Int]
-digitStringToNumList line = map digitToInt line
+digitStringToNumList = map digitToInt
 
 main :: IO ()
 main = do
@@ -32,6 +32,6 @@ main = do
       riskLevel = foldr (\n acc -> acc + n + 1) 0 lowPoints
 
   -- putStrLn . show $ ws
-  putStrLn . show $ heightMap
-  putStrLn . show $ lowPoints
-  putStrLn . show $ riskLevel
+  print heightMap
+  print lowPoints
+  print riskLevel

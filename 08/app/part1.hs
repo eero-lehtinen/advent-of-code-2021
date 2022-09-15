@@ -17,4 +17,4 @@ main = do
       ws = map (T.words . T.drop 61) ls
 
   -- putStrLn . show $ ws
-  putStrLn . show $ sum (map count1478 ws)
+  print $ sum (map count1478 ws)

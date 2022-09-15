@@ -1,7 +1,6 @@
 import Data.Char (ord)
 import Data.Either (rights)
 import Data.Foldable
-import Data.Foldable (toList)
 import Data.List (elemIndex, intersect, sort, union, (\\))
 import Data.Maybe (catMaybes)
 import Data.Sequence (Seq)
@@ -15,7 +14,7 @@ textLineToNumList :: T.Text -> T.Text -> [Int]
 textLineToNumList text sep = map fst $ rights $ map decimal $ T.splitOn sep text
 
 segmentPositions :: [[Int]]
-segmentPositions = (map . map) (charToPos) segmentLetters
+segmentPositions = (map . map) charToPos segmentLetters
 
 charToPos :: Char -> Int
 charToPos c = ord c - 97
@@ -46,7 +45,7 @@ filterFromSingleValues poss =
     poss
 
 solvePossibilities :: Seq Text -> [Text] -> Seq Text
-solvePossibilities poss ws =
+solvePossibilities =
   foldr
     ( \w acc ->
         let fittingSegments = filter (\s -> length s == T.length w) segmentPositions
@@ -57,13 +56,11 @@ solvePossibilities poss ws =
                 ( \i text ->
                     case (i `elem` ignores, i `elem` seg) of
                       (True, _) -> text
-                      (False, True) -> T.filter (\c -> c `T.elem` w) text
+                      (False, True) -> T.filter (`T.elem` w) text
                       (False, False) -> T.filter (\c -> not $ c `T.elem` w) text
                 )
                 acc
     )
-    poss
-    ws
 
 fromDigits :: [Int] -> Int
 fromDigits = foldl addDigit 0

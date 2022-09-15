@@ -20,4 +20,4 @@ main = do
   let nums = textLineToNumList contents (T.pack ",")
       center = findShortestDist nums
 
-  putStrLn . show $ findShortestDist nums
+  print $ findShortestDist nums

@@ -7,7 +7,7 @@ import qualified Data.Text.IO as TIO
 import Debug.Trace (trace)
 
 digitStringToNumList :: String -> [Int]
-digitStringToNumList line = map digitToInt line
+digitStringToNumList = map digitToInt
 
 -- scuffed dfs
 collectBasin :: (Int, Int) -> [(Int, Int)] -> Matrix Int -> [(Int, Int)]
@@ -23,9 +23,9 @@ collectBasin (y, x) visited hMap =
         if n == length visited - 1
           then reverse visited
           else collectBasin (visited !! (n + 1)) visited hMap
-      _ -> collectBasin (visited !! 0) (insert ++ visited) hMap
+      _ -> collectBasin (head visited) (insert ++ visited) hMap
   where
-    notVisited (y2, x2) = not $ elem (y2, x2) visited
+    notVisited (y2, x2) = (y2, x2) `notElem` visited
     cond (y2, x2) =
       notVisited (y2, x2)
         && y2 <= nrows hMap
@@ -34,7 +34,7 @@ collectBasin (y, x) visited hMap =
         && x2 >= 1
         && hMap ! (y2, x2) > hMap ! (y, x)
         && hMap ! (y2, x2) < 9
-    insert = if notVisited (y, x) then [(y, x)] else []
+    insert = [(y, x) | notVisited (y, x)]
 
 main :: IO ()
 main = do
@@ -63,4 +63,4 @@ main = do
   -- putStrLn . show $ lowPoints
   -- putStrLn . show $ basins
   -- putStrLn . show $ basinCounts
-  putStrLn . show . product . take 3 . reverse . sort $ basinCounts
+  print . product . take 3 . reverse . sort $ basinCounts

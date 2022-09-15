@@ -14,14 +14,14 @@ data Coord = Coord
   }
   deriving (Show, Eq, Ord)
 
-data Vent = Vent
+newtype Vent = Vent
   { coveredCoords :: [Coord]
   }
   deriving (Show)
 
 type CoordCount = Map Coord Int
 
-data Board = Board {elems :: [[(Bool, Int)]]} deriving (Show)
+newtype Board = Board {elems :: [[(Bool, Int)]]} deriving (Show)
 
 toPair :: [b] -> (b, b)
 toPair [a, b] = (a, b)
@@ -30,26 +30,27 @@ toPair _ = error "two elements required for a pair"
 getCoveredCoords :: Coord -> Coord -> [Coord]
 getCoveredCoords start end
   | start == end = [end]
-  | and [y start /= y end, x start /= x end] = []
+  | (y start /= y end) && (x start /= x end) = []
   | y start < y end = start : helper id (+ 1)
   | y start > y end = start : helper id (+ (-1))
   | x start < x end = start : helper (+ 1) id
   | x start > x end = start : helper (+ (-1)) id
+  | otherwise = error "unreachable"
   where
     helper fx fy = getCoveredCoords (Coord (fx $ x start) (fy $ y start)) end
 
 parseCoord :: Text -> Coord
 parseCoord text =
   let pointPair = toPair $ map fst $ rights $ map decimal $ T.splitOn (T.pack ",") text
-   in Coord (fst pointPair) (snd pointPair)
+   in uncurry Coord pointPair
 
 parseVent :: Text -> Vent
 parseVent text =
   let coordPair = toPair $ map parseCoord $ T.splitOn (T.pack " -> ") text
-   in Vent $ getCoveredCoords (fst coordPair) (snd coordPair)
+   in Vent $ uncurry getCoveredCoords coordPair
 
 countCoveredCoords :: [Vent] -> CoordCount
-countCoveredCoords vs = foldr countVent Map.empty vs
+countCoveredCoords = foldr countVent Map.empty
   where
     countVent :: Vent -> CoordCount -> CoordCount
     countVent v acc = foldr countCoords acc (coveredCoords v)
@@ -64,5 +65,4 @@ main = do
       vents = map parseVent ls
       coordCount = countCoveredCoords vents
 
-  -- putStrLn $ show coordCount
-  putStrLn $ show $ Map.size $ Map.filter (> 1) coordCount
+  print (Map.size $ Map.filter (> 1) coordCount)

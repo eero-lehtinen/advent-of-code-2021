@@ -4,7 +4,7 @@ Days 1-9 are in Haskell.
 The rest are in Rust.
 
 ## Haskell run instructions
-Install GHC 9.4.2 and Cabal 3.6.2.0 (with [GHCup](https://www.haskell.org/ghcup/))
+Install GHC 9.2.4 and Cabal 3.6.2.0 (with [GHCup](https://www.haskell.org/ghcup/))
 ```sh
 cd 01
 cabal run part1

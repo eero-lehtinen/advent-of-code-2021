@@ -1,11 +1,14 @@
+{-# LANGUAGE ImportQualifiedPost #-}
+{-# LANGUAGE TupleSections #-}
+
 import Data.Either (rights)
 import Data.List (transpose)
 import Data.Maybe (catMaybes)
-import qualified Data.Text as T
-import qualified Data.Text.IO as TIO
+import Data.Text qualified as T
+import Data.Text.IO qualified as TIO
 import Data.Text.Read (decimal)
 
-data Board = Board {elems :: [[(Bool, Integer)]]} deriving (Show)
+newtype Board = Board {elems :: [[(Bool, Integer)]]} deriving (Show)
 
 registerNum :: Integer -> Board -> Board
 registerNum n board = Board $ (map . map) (\(b, x) -> if x == n then (True, x) else (b, x)) (elems board)
@@ -14,13 +17,13 @@ rotl :: [[a]] -> [[a]]
 rotl = transpose . map reverse
 
 hasWon :: Board -> Bool
-hasWon board = or [calc $ elems board, calc . rotl $ elems board]
+hasWon board = calc (elems board) || (calc . rotl $ elems board)
   where
     calc :: [[(Bool, Integer)]] -> Bool
     calc e = any null (filter (not . fst) <$> e)
 
 calcScore :: Board -> Integer
-calcScore board = sum $ map snd $ concat (filter (not . fst) <$> (elems board))
+calcScore board = sum $ map snd $ concat (filter (not . fst) <$> elems board)
 
 textLineToNumList :: T.Text -> T.Text -> [Integer]
 textLineToNumList text sep = map fst $ rights $ map decimal $ T.splitOn sep text
@@ -33,14 +36,14 @@ main = do
       boardParts = T.splitOn (T.pack "\n\n") (T.unlines $ drop 2 ls)
       boards = map toBoard boardParts
 
-  putStrLn $ show $ process boards nums
+  print (process boards nums)
   where
     toBoard :: T.Text -> Board
-    toBoard text = Board $ (map . map) (\x -> (False, x)) $ (\t -> textLineToNumList t (T.pack " ")) <$> T.lines text
+    toBoard text = Board $ (map . map) (False,) $ (\t -> textLineToNumList t (T.pack " ")) <$> T.lines text
 
 process :: [Board] -> [Integer] -> Integer
 process boards nums =
   let newBoards = map (registerNum $ head nums) boards
    in case filter hasWon newBoards of
-        [b] -> (calcScore b) * (head nums)
+        [b] -> calcScore b * head nums
         _ -> process newBoards (tail nums)

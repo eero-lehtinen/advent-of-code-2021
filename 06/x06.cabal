@@ -1,5 +1,5 @@
 cabal-version:      2.4
-name:               day05
+name:               x06
 version:            0.1.0.0
 
 -- A short (one-line) description of the package.
@@ -29,7 +29,7 @@ executable part1
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
-    build-depends:    base ^>=4.16.1.0, text, containers
+    build-depends:    base ^>= 4.16.0.0, text, containers
     hs-source-dirs:   app
     default-language: Haskell2010
 
@@ -41,6 +41,6 @@ executable part2
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
-    build-depends:    base ^>=4.16.1.0, text, containers
+    build-depends:    base ^>= 4.16.0.0, text, containers
     hs-source-dirs:   app
     default-language: Haskell2010

@@ -12,7 +12,7 @@ findShortestDist :: [Int] -> Int
 findShortestDist nums = minimum [totalDistances nums x | x <- [minimum nums .. maximum nums]]
 
 totalDistances :: [Int] -> Int -> Int
-totalDistances nums target = sum $ map (\a -> calcDist a target) nums
+totalDistances nums target = sum $ map (`calcDist` target) nums
   where
     calcDist :: Int -> Int -> Int
     calcDist a target = let n = int2Double $ abs $ target - a in double2Int (n * (n + 1) / 2)
@@ -23,4 +23,4 @@ main = do
   let nums = textLineToNumList contents (T.pack ",")
       center = findShortestDist nums
 
-  putStrLn . show $ findShortestDist nums
+  print $ findShortestDist nums

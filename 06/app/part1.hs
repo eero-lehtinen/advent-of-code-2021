@@ -23,6 +23,6 @@ main :: IO ()
 main = do
   contents <- TIO.readFile "input.txt"
   let nums = textLineToNumList contents (T.pack ",")
-      count = fmap (\n -> countOccur n nums) (Seq.fromList [0 .. 8])
+      count = fmap (`countOccur` nums) (Seq.fromList [0 .. 8])
 
-  putStrLn . show . sum $ iterate simulateFishDay count !! 80
+  print . sum $ iterate simulateFishDay count !! 80
