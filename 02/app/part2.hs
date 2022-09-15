@@ -8,9 +8,6 @@ import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
 import Data.Text.Read (decimal)
 
-textToNumList :: T.Text -> T.Text -> [Integer]
-textToNumList text sep = map fst $ rights $ map decimal $ T.splitOn sep text
-
 toNum :: T.Text -> Integer
 toNum x =
   case decimal x of
