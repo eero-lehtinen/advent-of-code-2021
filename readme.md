@@ -1,7 +1,10 @@
 # Advent of Code 2021
-Days 1-9 are in Haskell.
 
-The rest are in Rust.
+This repository contains my solutions to the [Advent of Code 2021](https://adventofcode.com/2021) challenges.
+
+Days 1-9 are in [Haskell](https://www.haskell.org/).
+
+The rest are in [Rust](https://www.rust-lang.org/).
 
 ## Haskell run instructions
 Install GHC 9.2.4 and Cabal 3.6.2.0 (with [GHCup](https://www.haskell.org/ghcup/))
